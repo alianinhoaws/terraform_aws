@@ -7,7 +7,7 @@ myip=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 cat <<EOF > /var/www/html/index.html
 <html>
 
-<h2>Build by <font color="red"> ${name} ${surname} My Ip is: $myip </font></h2><br>
+<h2>Build by <font color="green"> ${name} ${surname} My Ip is: $myip </font></h2><br>
 %{ for x in names ~}
 Thanks to ${x} <br>
 %{ endfor ~}

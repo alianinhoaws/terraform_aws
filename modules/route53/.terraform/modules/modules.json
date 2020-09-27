@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"dns_records","Source":"./modules/route53-dns-records","Dir":""},{"Key":"webserver","Source":"./modules/webserver","Dir":""}]}
