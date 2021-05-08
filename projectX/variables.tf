@@ -1,6 +1,6 @@
 variable "region" {
-//  description = "Please set AWS region to deploy"
-//  type = string
+  description = "AWS region to deploy"
+  type = string
   default = "eu-west-1"
 }
 
@@ -9,11 +9,7 @@ variable "instance_type" {
   description = "Instance type"
   type = string
 }
-variable "allow_ports" {
-  default = ["80", "443", "8080"]
-  description = "List of ports"
-  type = list
-}
+
 variable "cidr_blocks" {
   default = ["0.0.0.0/0"]
   description = "CIDR"
@@ -27,5 +23,26 @@ variable "tags" {
     CostCenter = "Andrii"
     Project = "terraform"
     Environment = "DEV"
+  }
+}
+
+variable "env" {
+  default = "dev"
+}
+
+variable "ec2_size" {
+  description = "Environment to rise"
+  type = map
+  default = {
+    "prod" : "t2.small"
+    "dev" : "t2.micro"
+  }
+}
+
+variable "allow_ports" {
+  type = map
+  default = {
+    "prod" = ["80","443"]
+    "dev"  = ["80", "443", "8080"]
   }
 }

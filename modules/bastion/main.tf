@@ -1,18 +1,12 @@
-//data "template_file" "bastion_user_data" {
-//  template = "${file("${path.module}/bastion_userdata.sh")}"
-//
-////  vars {
-////    REGION = "${var.bastion_region}"
-////    EIP_ID = "${aws_eip.bastion_eip.id}"
-////  }
-//}
+
+locals {terraform_key = "terraform-key"}
 
 resource "aws_launch_configuration" "bastion"{
   name_prefix     = "BastionHost-"
   image_id        = var.amazon_linux
   instance_type   = var.instance_type
   security_groups = [var.security_group_bastion]
-  key_name = "terraform-key"
+  key_name = local.terraform_key
 
   user_data       = templatefile("../modules/bastion/bastion.sh.tpl", {
     programs_to_install         = ["mysql"]
@@ -31,13 +25,9 @@ resource "aws_autoscaling_group" "bastion" {
   min_elb_capacity = 1
   vpc_zone_identifier = var.subnets
   health_check_grace_period = 60
-  #load_balancers = [aws_elb.web.name]
   health_check_type = "EC2"
-  #ping or EC2 service will checks
   desired_capacity = 1
   default_cooldown = 60
-  #force_delete              = true
-  #placement_group           = aws_placement_group.test.id
   launch_configuration = aws_launch_configuration.bastion.name
   dynamic "tag" {
     for_each = {
@@ -69,21 +59,13 @@ resource "aws_eip" "bastion_static_ip" {
     aws_autoscaling_group.bastion]
 }
 
-
 resource "aws_key_pair" "ssh" {
 
-  key_name = "terraform-key"
+  key_name = local.terraform_key
 
   public_key = file("../modules/bastion/id_rsa.pub")
 
 }
-
-//resource "aws_eip" "amaz_static_ip" {
-//  vpc                       = true
-
-//  instance = aws_instance.my_amazon.id
-  #tags = merge(var.tags, {Name = "var.tags["Environment"]} Server IP})
-//}
 
 data "aws_instances" "bastion" {
   instance_tags = {

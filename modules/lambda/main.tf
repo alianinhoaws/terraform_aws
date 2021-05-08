@@ -52,13 +52,8 @@ resource "aws_lambda_function" "terraform-lambda-node" {
   filename      = "../modules/lambda/exports.js.zip"
   function_name = "lambda_terraform2"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "exports.handler"
-  source_code_hash = filebase64sha256("../modules/lambda/exports.js.zip")
-
-  # The filebase64sha256() function is available in Terraform 0.11.12 and later
-  # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
-  # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  #source_code_hash = filebase64sha256("lambda_file.zip")
+  handler       = var.entrypoint
+  source_code_hash = filebase64sha256("${var.file_path}")
 
   runtime = "nodejs12.x"
 
@@ -79,12 +74,8 @@ resource "aws_lambda_permission" "with_lb" {
 
 resource "aws_lb_target_group" "labmda_terraform" {
   name     = "lambda-terraform"
-//  port     = 443
-//  protocol = "HTTPS"
-//  vpc_id   = var.vpc
   target_type = "lambda"
 }
-
 
 resource "aws_lb_target_group_attachment" "test" {
   target_group_arn = aws_lb_target_group.labmda_terraform.arn

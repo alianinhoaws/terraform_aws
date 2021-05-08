@@ -56,7 +56,7 @@ resource "aws_security_group" "bastion" {
 
 resource "aws_security_group" "rds" {
   name        = "RDS"
-  description = "Allow all from subnets"
+  description = "Allow all from public subnets"
   vpc_id = var.vpc
 
   ingress {

@@ -17,3 +17,7 @@ variable "instance_type" {
 variable "ssh-key" {
   description = "key for ssh connection"
 }
+
+variable "instnace_count" {
+  description = "amount of the instances to rise"
+}

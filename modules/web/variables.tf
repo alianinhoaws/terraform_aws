@@ -21,3 +21,7 @@ variable "tags" {
 variable "vpc" {
   description = "main vpc to locate target group"
 }
+
+variable "name_prefix" {
+  description = "name prefix of the instances"
+}

@@ -1,32 +1,25 @@
 resource "aws_ssm_parameter" "rds_password" {
-  name = "/prod/mysql"
-  type = "SecureString"
+  name = var.pass_location
+  type = var.pass_type
   value = var.pass
 }
 
-
-//resource "random_string" "rds_password" {
-//  length = 12
-//  special = true
-//  override_special = "!#$&"
-//}
-
 data "aws_ssm_parameter" "rds_password" {
-  name = "/prod/mysql"
+  name = var.pass_location
   depends_on = [aws_ssm_parameter.rds_password]
 }
 
 resource "aws_db_instance" "rds" {
-  identifier             = "prod-mysql"
-  allocated_storage      = 20
-  storage_type           = "gp2"
-  engine                 = "mysql"
-  engine_version         = "5.7"
-  instance_class         = "db.t2.micro"
-  name                   = "terraform_database"
-  username               = "db_user"
+  identifier             = var.identifier
+  allocated_storage      = var.storage_size
+  storage_type           = var.storage_type
+  engine                 = var.mysql_engine
+  engine_version         = var.mysql_engine_version
+  instance_class         = var.instance_class
+  name                   = var.db_name
+  username               = var.user_name
   password               = data.aws_ssm_parameter.rds_password.value
-  parameter_group_name   = "default.mysql5.7"
+  parameter_group_name   = var.mysql_type_group
   vpc_security_group_ids = [var.security_rds]
   skip_final_snapshot    = true
   apply_immediately      = true
@@ -35,6 +28,6 @@ resource "aws_db_instance" "rds" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  name                   = "my-test-database-subnet-group"
+  name                   = "database-subnet-group"
   subnet_ids             = var.aws_subnet
 }

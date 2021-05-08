@@ -1,13 +1,13 @@
 
 resource "aws_launch_configuration" "web"{
-  name_prefix     = "Green/Blue-"
+  name_prefix     = var.name_prefix
   image_id        = var.ami_image
   instance_type   = var.instance_type
   security_groups = [var.security_group]
   user_data       = templatefile("../modules/web/user_data.sh.tpl", {
     name          = "Andrii"
     surname       = "Maz"
-    names         = ["Step", "The academy", "The best academy in the world"]
+    names         = ["Step", "The academy", "The best academy in the whole world", "thanks terraform"]
   })
   lifecycle {
     create_before_destroy = true
@@ -22,17 +22,14 @@ resource "aws_autoscaling_group" "web" {
   vpc_zone_identifier = var.subnets
   health_check_grace_period = 60
   health_check_type = "EC2"
-  #ping or EC2 service will checks
   desired_capacity = 2
   default_cooldown = 60
   target_group_arns = [aws_alb_target_group.instances.arn]
-  #force_delete              = true
-  #placement_group           = aws_placement_group.test.id
   launch_configuration = aws_launch_configuration.web.name
 
   dynamic "tag" {
     for_each = {
-      Name    = "WebServer Blue/Green"
+      Name    = "WebServer ${var.name_prefix}"
       Owner   = "Andrii"
       TAGKEY  = "TAGVALUE"
     }
@@ -109,7 +106,7 @@ resource "aws_cloudwatch_metric_alarm" "example-cpu-alarm-scaledown" {
   threshold = "5"
   dimensions = {
   "AutoScalingGroupName" = aws_autoscaling_group.web.name
-}
-actions_enabled = true
-alarm_actions = [aws_autoscaling_policy.example-cpu-policy-scaledown.arn]
+  }
+  actions_enabled = true
+  alarm_actions = [aws_autoscaling_policy.example-cpu-policy-scaledown.arn]
 }
