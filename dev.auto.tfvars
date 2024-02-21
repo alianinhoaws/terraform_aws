@@ -6,3 +6,5 @@ tags = {
     Project = "terraform"
     Environment = "DEV"
 }
+AWS_SECRET_KEY = "DAD12DARFAVADVFASZF"
+AWS_SECRET_ACCESS_KEY = "iasdasdastqraqweadASDADADAdasdqeWEQ"
