@@ -9,7 +9,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "security_test" ]
+    branches: [ "master" ]
   schedule:
     - cron: '24 23 * * 6'
 
